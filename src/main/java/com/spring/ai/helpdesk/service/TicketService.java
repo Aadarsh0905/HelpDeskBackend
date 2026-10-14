@@ -1,41 +1,45 @@
 package com.spring.ai.helpdesk.service;
 
-import org.springframework.stereotype.Service;
-
 import com.spring.ai.helpdesk.entity.Ticket;
 import com.spring.ai.helpdesk.repository.TicketRepository;
-
 import jakarta.transaction.Transactional;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class TicketService {
-	private TicketRepository ticketRepository;
-	
-	
-	//create ticket
-	@Transactional
-	public Ticket createTicket(Ticket ticket) {
-		ticket.setId(null);
-		return ticketRepository.save(ticket);
-	}
-	
-	//update ticket
-	public Ticket updateTicket(Ticket ticket) {
-		return ticketRepository.save(ticket);
-	}
-	
-	//get ticket
-	public Ticket getTicket(Long TicketId) {
-		return ticketRepository.findById(TicketId).orElse(null);
-	}
-	
-	//get ticket by email
-	public Ticket getTicketByEmail(String email) {
-		return ticketRepository.findByEmail(email).orElse(null);
-	}
-	
-	
+
+    private final TicketRepository ticketRepository;
+
+    @Transactional
+    public Ticket createTicket(Ticket ticket) {
+        if (ticket == null) {
+            throw new IllegalArgumentException("Ticket cannot be null");
+        }
+        ticket.setId(null);
+        return ticketRepository.save(ticket);
+    }
+
+    @Transactional
+    public Ticket updateTicket(Ticket ticket) {
+        if (ticket == null || ticket.getId() == null) {
+            throw new IllegalArgumentException("Ticket id is required for update");
+        }
+        return ticketRepository.save(ticket);
+    }
+
+    public Ticket getTicket(Long id) {
+        return ticketRepository.findById(id).orElse(null);
+    }
+
+    public Ticket getTicketByEmail(String email) {
+        return ticketRepository.findByEmail(email).orElse(null);
+    }
+
+    public List<Ticket> getAllTickets() {
+        return ticketRepository.findAll();
+    }
 }
