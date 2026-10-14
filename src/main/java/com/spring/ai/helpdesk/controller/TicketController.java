@@ -28,6 +28,12 @@ public class TicketController {
         return ticket == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(ticket);
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Ticket> getTicketByEmail(@PathVariable String email) {
+        Ticket ticket = ticketService.getTicketByEmail(email);
+        return ticket == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(ticket);
+    }
+
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@Valid @RequestBody Ticket ticket) {
         return new ResponseEntity<>(ticketService.createTicket(ticket), HttpStatus.CREATED);

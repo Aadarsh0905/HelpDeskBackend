@@ -5,9 +5,10 @@ A production-ready Spring Boot backend for an AI-powered help desk assistant.
 ## Features
 - AI help desk assistant using Spring AI + Ollama
 - JDBC-backed chat memory for conversation continuity
-- MySQL persistence for help desk tickets
-- Ticket CRUD APIs
-- Health monitoring through Spring Actuator
+- MySQL persistence for ticket records
+- REST APIs for ticket lifecycle management
+- OpenAPI / Swagger documentation
+- Health metrics via Spring Actuator
 
 ## Prerequisites
 - Java 21+
@@ -17,27 +18,34 @@ A production-ready Spring Boot backend for an AI-powered help desk assistant.
 
 ## Local setup
 
-1. Start MySQL:
-   ```bash
-   docker run --name helpdesk-mysql -e MYSQL_ROOT_PASSWORD=your_password -e MYSQL_DATABASE=helpdesk_db -p 3306:3306 -d mysql:8
-   ```
+### Option 1: MySQL via Docker
+```bash
+docker run --name helpdesk-mysql -e MYSQL_ROOT_PASSWORD=your_password -e MYSQL_DATABASE=helpdesk_db -p 3306:3306 -d mysql:8
+```
 
-2. Start Ollama:
-   ```bash
-   ollama serve
-   ```
+### Option 2: Use Docker Compose
+```bash
+docker compose up -d
+```
 
-3. Pull a model:
-   ```bash
-   ollama pull llama3.1
-   ```
+### Start Ollama
+```bash
+ollama serve
+ollama pull llama3.1
+```
 
-4. Update database credentials in `src/main/resources/application.properties` if needed.
+### Run the app
+```bash
+./mvnw spring-boot:run
+```
 
-5. Run the app:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+### Optional: override environment variables
+```bash
+export SPRING_DATASOURCE_USERNAME=root
+export SPRING_DATASOURCE_PASSWORD=your_password
+export OLLAMA_MODEL=llama3.1
+./mvnw spring-boot:run
+```
 
 ## API endpoints
 
@@ -48,12 +56,15 @@ A production-ready Spring Boot backend for an AI-powered help desk assistant.
 ### Tickets
 - `GET /api/v1/tickets`
 - `GET /api/v1/tickets/{id}`
+- `GET /api/v1/tickets/email/{email}`
 - `POST /api/v1/tickets`
 - `PUT /api/v1/tickets/{id}`
 
-### App health
+### Docs and health
+- `GET /swagger-ui.html`
+- `GET /v3/api-docs`
 - `GET /actuator/health`
 
 ## Notes
-- The app uses `Conversation-Id` as the header for chat memory continuity.
-- The default model is `llama3.1` and can be changed in `application.properties`.
+- `Conversation-Id` is used as the chat memory conversation header.
+- Default model: `llama3.1`.
