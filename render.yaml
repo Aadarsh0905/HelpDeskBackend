@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: helpdesk-fullstack-app
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/tickets/stats
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/helpdesk?sslMode=VERIFY_IDENTITY&enabledTLSProtocols=TLSv1.2,TLSv1.3
+      - key: SPRING_DATASOURCE_USERNAME
+        value: 34f53Yxe3VE5yJg.root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: A0n3G4aj4q1dLOpn
+      - key: SPRING_AI_OLLAMA_BASE_URL
+        sync: false
+      - key: SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL
+        value: llama3.1
