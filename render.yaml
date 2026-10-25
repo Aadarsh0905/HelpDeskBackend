@@ -16,6 +16,6 @@ services:
       - key: SPRING_DATASOURCE_PASSWORD
         value: A0n3G4aj4q1dLOpn
       - key: SPRING_AI_OLLAMA_BASE_URL
-        sync: false
+        value: https://monetary-inch-php-precious.trycloudflare.com
       - key: SPRING_AI_OLLAMA_CHAT_OPTIONS_MODEL
         value: llama3.1
