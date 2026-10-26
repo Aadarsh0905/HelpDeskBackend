@@ -1,6 +1,7 @@
 package com.spring.ai.helpdesk.config;
 
 import java.net.URI;
+import java.time.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,12 @@ import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class AiConfig {
@@ -52,7 +59,21 @@ public class AiConfig {
 		}
 
 		logger.info("Initializing OllamaApi with sanitized baseUrl: {}", cleanUrl);
-		return OllamaApi.builder().baseUrl(cleanUrl).build();
+
+		JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
+		requestFactory.setReadTimeout(Duration.ofMinutes(5));
+		RestClient.Builder restClientBuilder = RestClient.builder().requestFactory(requestFactory);
+
+		HttpClient httpClient = HttpClient.create()
+				.responseTimeout(Duration.ofMinutes(5));
+		WebClient.Builder webClientBuilder = WebClient.builder()
+				.clientConnector(new ReactorClientHttpConnector(httpClient));
+
+		return OllamaApi.builder()
+				.baseUrl(cleanUrl)
+				.restClientBuilder(restClientBuilder)
+				.webClientBuilder(webClientBuilder)
+				.build();
 	}
 
 	@Bean
